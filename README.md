@@ -12,16 +12,12 @@ https://www.theforexchronicles.com/the-ema-5-and-ema-20-crossover-trading-strate
 
 ## Usage
 
-Add `apiKey` and `apiSecret` from bittrex to your `./config/index.js`
+Add `apiKey` and `apiSecret` from bittrex to your `./config.ts`
 See https://support.coinigy.com/hc/en-us/articles/360001123973-How-do-I-find-my-API-key-on-Bittrex-com-
 
 Tweak the other configuration options to your liking.
 
 ```
-npm i
-npm run start:dev
+yarn
+yarn start:dev
 ```
-
-You can also use the included `Dockerfile` to build an image and deploy it wherever you want.
-
-![Screenshot](screenshot.png)
