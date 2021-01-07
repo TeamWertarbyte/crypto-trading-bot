@@ -16,6 +16,20 @@ https://www.theforexchronicles.com/the-ema-5-and-ema-20-crossover-trading-strate
 
 ![EMA crossing strategy](ema-crossing.png)
 
+## Donations
+
+To support this project, you can make a donation to its current maintainer:
+
+[![paypal](paypal.gif)](https://paypal.me/Saschb2b)
+
+Bitcoin: 19yG1s5s1s4JnfdsNLfVy3GS6GYPxgG3BY
+
+Ethereum: 0x2146e4337b4d7b17899b71694456b13f434fb3e4
+
+Doge: DJ6JwaBJ6QwyaDLfYsNdre52sf1C7Abm5B
+
+Litecoin: LSVno86JENvnEmdCrY6sVNGGe7KM2HyLKm
+
 ## Program Sequence
 
 ## Main loop
