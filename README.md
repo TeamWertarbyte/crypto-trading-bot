@@ -108,12 +108,23 @@ As package manager install yarn https://classic.yarnpkg.com/en/docs/install
 
 ## Usage
 
+### Bittrex API key and API secret
+How to get: https://support.coinigy.com/hc/en-us/articles/360001123973-How-do-I-find-my-API-key-on-Bittrex-com-
+
+Set `BITTREX_API_KEY` and `BITTREX_API_SECRET` as environment variables.
+
+Easiest way is to add an `.env` file into the root project folder `./.env` wit the content
+```
+BITTREX_API_KEY=YOUR_BITTREX_API_KEY
+BITTREX_API_SECRET=YOUR_BITTREX_API_SECRET
+```
+
+If no keys were found you'll get the error message `No BITTREX_API_KEY and or BITTREX_API_SECRET found. Check your environment variables`
+
 ### Adapt the config
-Add `apiKey` and `apiSecret` from bittrex to your `./modules/configuration/index.ts`
+Change the configuration parameters to your liking `./modules/configuration/index.ts`
 
-See https://support.coinigy.com/hc/en-us/articles/360001123973-How-do-I-find-my-API-key-on-Bittrex-com-
-
-For more details on the config see the documentation in `./modules/configuration/types.ts`
+For more details see the documentation in `./modules/configuration/types.ts`
 
 ## Build and start
 ```
