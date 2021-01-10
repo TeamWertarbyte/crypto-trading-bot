@@ -9,12 +9,6 @@ require('dotenv').config();
 log.info('Ichimoku bot is starting');
 log.info('This bot trades with the ichimoku trading system');
 
-if (config.debug) {
-  log.info('Debug mode is activated');
-  log.info('All buy and sell api requests will get skipped');
-  log.info('Will skip reporting');
-}
-
 if (!process.env.BITTREX_API_KEY || !process.env.BITTREX_API_SECRET) {
   throw new Error(
     'No BITTREX_API_KEY and or BITTREX_API_SECRET found. Check your environment variables'

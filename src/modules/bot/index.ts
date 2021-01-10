@@ -30,13 +30,17 @@ const sleep = (ms: number): Promise<any> => {
 
 export default class Bot {
   api: BittrexApi;
-  settings: Configuration;
-  currencies: Market[];
+  config: Configuration;
 
-  constructor(api: BittrexApi, settings: Configuration) {
+  constructor(api: BittrexApi, config: Configuration) {
+    if (config.debug) {
+      log.info('Debug mode is activated');
+      log.info('All buy and sell api requests will get skipped');
+      log.info('Will skip reporting');
+    }
+
     this.api = api;
-    this.settings = settings;
-    this.currencies = [];
+    this.config = config;
   }
 
   start = async () => {
@@ -51,7 +55,7 @@ export default class Bot {
     );
     await this.evaluateMarkets(marketSummaries.map(({ symbol }) => symbol));
 
-    if (!this.settings.debug) {
+    if (!this.config.debug) {
       // await this.report();
     }
 
@@ -65,13 +69,13 @@ export default class Bot {
 
     const filtered: Market[] = markets.filter(
       ({ quoteCurrencySymbol, status }) =>
-        quoteCurrencySymbol === this.settings.mainMarket &&
+        quoteCurrencySymbol === this.config.mainMarket &&
         status === Status.ONLINE
     );
 
     log.info(
       `Fetched ${markets.length} and filtered ${filtered.length} ${
-        this.settings.mainMarket
+        this.config.mainMarket
       } markets ${(now() - start).toFixed(5)} ms`
     );
     return filtered;
@@ -110,25 +114,25 @@ export default class Bot {
     const balances: Balance[] = (await this.api.getBalances())
       .filter(({ available }) => available > 0)
       .filter(
-        ({ currencySymbol }) => !this.settings.HODL.includes(currencySymbol)
+        ({ currencySymbol }) => !this.config.HODL.includes(currencySymbol)
       );
 
     await sleep(10000);
 
     for (const balance of balances) {
       const ticker: MarketTicker = await this.api.getMarketTicker(
-        `${balance.currencySymbol}-${this.settings.mainMarket}`
+        `${balance.currencySymbol}-${this.config.mainMarket}`
       );
       const revenue =
-        balance.available * ticker.bidRate - this.settings.amountPerInvest;
+        balance.available * ticker.bidRate - this.config.amountPerInvest;
 
       if (revenue > 0) {
         const market: Market = await this.api.getMarket(
-          `${balance.currencySymbol}-${this.settings.mainMarket}`
+          `${balance.currencySymbol}-${this.config.mainMarket}`
         );
         const quantity = revenue / ticker.bidRate;
 
-        if (!this.settings.debug) {
+        if (!this.config.debug) {
           if (quantity > market.minTradeSize) {
             const response = await this.api.sellLimit(
               market.symbol,
@@ -139,7 +143,7 @@ export default class Bot {
             log.info(response);
           }
           log.info(
-            `${balance.currencySymbol} placed REVENUE SELL order for ${revenue} ${this.settings.mainMarket}`
+            `${balance.currencySymbol} placed REVENUE SELL order for ${revenue} ${this.config.mainMarket}`
           );
         }
         await sleep(2500);
@@ -215,10 +219,10 @@ export default class Bot {
     const currencySymbol = marketSymbol.split('-')[0];
 
     if (balance && balance.available > 0) {
-      if (this.settings.blacklist.includes(currencySymbol)) {
+      if (this.config.blacklist.includes(currencySymbol)) {
         log.info(`Will reject ${marketSymbol} due to blacklist`);
         marketDecision = MarketDecision.REJECT;
-      } else if (negativeTicks >= this.settings.minNegativeTicks) {
+      } else if (negativeTicks >= this.config.minNegativeTicks) {
         log.info(
           `Will reject ${marketSymbol} due to ${negativeTicks} negative ema ticks`
         );
@@ -229,7 +233,7 @@ export default class Bot {
         const ticker = await this.api.getMarketTicker(marketSymbol);
         const market = await this.api.getMarket(marketSymbol);
         if (balance.available > market.minTradeSize) {
-          if (!this.settings.debug) {
+          if (!this.config.debug) {
             const response = await this.api.sellLimit(
               market.symbol,
               balance.available,
@@ -245,8 +249,8 @@ export default class Bot {
       }
     } else if (!balance || (balance && balance.available === 0)) {
       if (
-        !this.settings.blacklist.includes(currencySymbol) &&
-        positiveTicks === this.settings.exactPositiveTicks
+        !this.config.blacklist.includes(currencySymbol) &&
+        positiveTicks === this.config.exactPositiveTicks
       ) {
         log.info(
           `Should invest in ${marketSymbol} due to ${positiveTicks} positive ema ticks`
@@ -255,11 +259,11 @@ export default class Bot {
       }
 
       if (marketDecision === MarketDecision.INVEST) {
-        const mainMarket = await this.api.getBalance(this.settings.mainMarket);
-        if (mainMarket.available > this.settings.amountPerInvest) {
+        const mainMarket = await this.api.getBalance(this.config.mainMarket);
+        if (mainMarket.available > this.config.amountPerInvest) {
           const ticker = await this.api.getMarketTicker(marketSymbol);
-          const quantity = this.settings.amountPerInvest / ticker.askRate;
-          if (!this.settings.debug) {
+          const quantity = this.config.amountPerInvest / ticker.askRate;
+          if (!this.config.debug) {
             const response = await this.api.buyLimit(
               marketSymbol,
               quantity,
@@ -268,12 +272,12 @@ export default class Bot {
             log.info(response);
           }
           log.info(
-            `Invested ${this.settings.amountPerInvest} ${mainMarket.currencySymbol} to buy ${quantity} of ${marketSymbol}`
+            `Invested ${this.config.amountPerInvest} ${mainMarket.currencySymbol} to buy ${quantity} of ${marketSymbol}`
           );
           await sleep(2500);
         } else {
           log.info(
-            `${mainMarket.available} ${this.settings.mainMarket} is not enough for further investments `
+            `${mainMarket.available} ${this.config.mainMarket} is not enough for further investments `
           );
         }
         await sleep(1000);
@@ -290,12 +294,12 @@ export default class Bot {
     for (const marketSymbol of marketSymbols) {
       let decision = MarketDecision.NONE;
 
-      if (this.settings.HODL.includes(marketSymbol)) {
+      if (this.config.HODL.includes(marketSymbol)) {
         decision = MarketDecision.HODL;
       } else {
         const candles: Candle[] = await this.api.getCandles(
           marketSymbol,
-          this.settings.tickInterval
+          this.config.tickInterval
         );
         await sleep(1500);
         if (candles?.length) {
@@ -332,7 +336,7 @@ export default class Bot {
     );
     const usdtBalance = await this.api.getBalance('USDT');
     const btcTicker = await this.api.getMarketTicker(
-      `BTC-${this.settings.mainMarket}`
+      `BTC-${this.config.mainMarket}`
     );
     await sleep(3500);
 
@@ -340,7 +344,7 @@ export default class Bot {
 
     for (const balance of balances) {
       const ticker = await this.api.getMarketTicker(
-        `${balance.currencySymbol}-${this.settings.mainMarket}`
+        `${balance.currencySymbol}-${this.config.mainMarket}`
       );
       const worth = balance.available * ticker.lastTradeRate;
       if (worth) {
