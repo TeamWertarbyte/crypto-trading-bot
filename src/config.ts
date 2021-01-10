@@ -14,21 +14,21 @@ export interface Config {
    */
   bittrexApiSecret: string;
   /**
-   * Coins to hodl
-   */
-  HODL: string[];
-  /**
    * Coins to sell as soon as possible and never buy
    */
   blacklist: string[];
   /**
-   * Amount in milliseconds to wait before next round
+   * If true, all sell and buy requests get skipped
    */
-  refreshTimeout: number;
+  debug: boolean
   /**
-   * Defines the interval used for candles
+   * Will invest when positive ticks are exactly this number
    */
-  tickInterval: CandleInterval;
+  exactPositiveTicks: number;
+  /**
+   * Coins to hodl
+   */
+  HODL: string[];
   /**
    * Market to trade all coins on. E.g. BTC or USDT
    * Only tested USDT so far
@@ -39,9 +39,13 @@ export interface Config {
    */
   minNegativeTicks: number;
   /**
-   * Will invest when positive ticks are exactly this number
+   * Amount in milliseconds to wait before next round
    */
-  exactPositiveTicks: number;
+  refreshTimeout: number;
+  /**
+   * Defines the interval used for candles
+   */
+  tickInterval: CandleInterval;
 }
 
 const config: Config = {
@@ -49,6 +53,7 @@ const config: Config = {
   bittrexApiKey: '',
   bittrexApiSecret: '',
   blacklist: ['DASH', 'GRIN', 'XMR', 'ZEC'],
+  debug: true,
   HODL: ['BTC', 'ETH'],
   refreshTimeout: 60000 * 60 * 0.05, // 3 min
   tickInterval: CandleInterval.DAY_1,
