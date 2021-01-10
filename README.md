@@ -109,11 +109,11 @@ As package manager install yarn https://classic.yarnpkg.com/en/docs/install
 ## Usage
 
 ### Adapt the config
-Add `apiKey` and `apiSecret` from bittrex to your `./config.ts`
+Add `apiKey` and `apiSecret` from bittrex to your `./modules/configuration/index.ts`
 
 See https://support.coinigy.com/hc/en-us/articles/360001123973-How-do-I-find-my-API-key-on-Bittrex-com-
 
-For more details on the config see the documentation in `config.ts`
+For more details on the config see the documentation in `./modules/configuration/types.ts`
 
 ## Build and start
 ```
