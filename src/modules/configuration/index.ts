@@ -1,4 +1,4 @@
-import { CandleInterval } from '../api/types';
+import { CandleInterval, MainMarket } from '../api/types';
 
 import { Configuration } from './types';
 
@@ -9,7 +9,7 @@ const config: Configuration = {
   HODL: ['BTC', 'ETH'],
   refreshTimeout: 60000 * 60 * 0.05, // 3 min
   tickInterval: CandleInterval.DAY_1,
-  mainMarket: 'USDT',
+  mainMarket: MainMarket.USDT,
   minNegativeTicks: 2,
   exactPositiveTicks: 2
 };

@@ -46,6 +46,14 @@ export interface CandleResponse
   quoteVolume?: string;
 }
 
+export enum MainMarket {
+  BTC = 'BTC',
+  ETH = 'ETH',
+  EUR = 'EUR',
+  USD = 'USD',
+  USDT = 'USDT'
+}
+
 export interface Market {
   symbol: string;
   baseCurrencySymbol: string;

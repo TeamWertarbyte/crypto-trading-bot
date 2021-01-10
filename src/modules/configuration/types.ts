@@ -1,4 +1,4 @@
-import { CandleInterval } from '../api/types';
+import { CandleInterval, MainMarket } from '../api/types';
 
 export interface Configuration {
   /**
@@ -25,7 +25,7 @@ export interface Configuration {
    * Market to trade all coins on. E.g. BTC or USDT
    * Only tested USDT so far
    */
-  mainMarket: string;
+  mainMarket: MainMarket;
   /**
    * Will reject when negative ticks are equal or below this number
    */
