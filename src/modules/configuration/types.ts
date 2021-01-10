@@ -1,6 +1,6 @@
-import { CandleInterval } from './types';
+import { CandleInterval } from '../../types';
 
-export interface Config {
+export interface Configuration {
   /**
    * Amount for every invest
    */
@@ -20,7 +20,7 @@ export interface Config {
   /**
    * If true, all buy and sell api requests get skipped
    */
-  debug: boolean
+  debug: boolean;
   /**
    * Will invest when positive ticks are exactly this number
    */
@@ -47,19 +47,3 @@ export interface Config {
    */
   tickInterval: CandleInterval;
 }
-
-const config: Config = {
-  amountPerInvest: 50.0,
-  bittrexApiKey: '',
-  bittrexApiSecret: '',
-  blacklist: ['DASH', 'GRIN', 'XMR', 'ZEC'],
-  debug: true,
-  HODL: ['BTC', 'ETH'],
-  refreshTimeout: 60000 * 60 * 0.05, // 3 min
-  tickInterval: CandleInterval.DAY_1,
-  mainMarket: 'USDT',
-  minNegativeTicks: 2,
-  exactPositiveTicks: 2
-};
-
-export default config;

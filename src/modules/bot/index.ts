@@ -4,7 +4,6 @@ import log from 'fancy-log';
 // @ts-ignore
 import { ema } from 'react-stockcharts/lib/indicator';
 import { BittrexApi } from '../api';
-import { Config } from '../../config';
 import {
   Balance,
   Candle,
@@ -15,6 +14,7 @@ import {
   MarketTicker,
   Status
 } from '../../types';
+import { Configuration } from '../configuration/types';
 
 /**
  * Awaitable sleep to keep API requests/min limit
@@ -28,10 +28,10 @@ const sleep = (ms: number): Promise<any> => {
 
 export default class Bot {
   api: BittrexApi;
-  settings: Config;
+  settings: Configuration;
   currencies: Market[];
 
-  constructor(api: BittrexApi, settings: Config) {
+  constructor(api: BittrexApi, settings: Configuration) {
     this.api = api;
     this.settings = settings;
     this.currencies = [];
@@ -49,8 +49,7 @@ export default class Bot {
     );
     await this.evaluateMarkets(marketSummaries.map(({ symbol }) => symbol));
 
-    if(!this.settings.debug)
-    {
+    if (!this.settings.debug) {
       // await this.report();
     }
 
@@ -130,9 +129,9 @@ export default class Bot {
         if (!this.settings.debug) {
           if (quantity > market.minTradeSize) {
             const response = await this.api.sellLimit(
-                market.symbol,
-                quantity,
-                ticker.bidRate
+              market.symbol,
+              quantity,
+              ticker.bidRate
             );
 
             log.info(response);
@@ -228,11 +227,11 @@ export default class Bot {
         const ticker = await this.api.getMarketTicker(marketSymbol);
         const market = await this.api.getMarket(marketSymbol);
         if (balance.available > market.minTradeSize) {
-          if(!this.settings.debug) {
+          if (!this.settings.debug) {
             const response = await this.api.sellLimit(
-                market.symbol,
-                balance.available,
-                ticker.bidRate
+              market.symbol,
+              balance.available,
+              ticker.bidRate
             );
             log.info(response);
           }
@@ -258,11 +257,11 @@ export default class Bot {
         if (mainMarket.available > this.settings.amountPerInvest) {
           const ticker = await this.api.getMarketTicker(marketSymbol);
           const quantity = this.settings.amountPerInvest / ticker.askRate;
-          if(!this.settings.debug) {
+          if (!this.settings.debug) {
             const response = await this.api.buyLimit(
-                marketSymbol,
-                quantity,
-                ticker.askRate
+              marketSymbol,
+              quantity,
+              ticker.askRate
             );
             log.info(response);
           }
