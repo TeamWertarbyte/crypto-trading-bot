@@ -1,8 +1,9 @@
 // @ts-ignore
-import now from 'performance-now';
 import log from 'fancy-log';
+import now from 'performance-now';
 // @ts-ignore
 import { ema } from 'react-stockcharts/lib/indicator';
+
 import { BittrexApi } from '../api';
 import {
   Balance,
@@ -14,6 +15,7 @@ import {
   Status
 } from '../api/types';
 import { Configuration } from '../configuration/types';
+
 import { CandleReactStockCharts } from './types';
 
 /**

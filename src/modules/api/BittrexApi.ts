@@ -1,4 +1,6 @@
 import CryptoJS from 'crypto-js';
+import fetch, { Headers, Response } from 'node-fetch';
+
 import {
   Balance,
   BalanceResponse,
@@ -15,7 +17,6 @@ import {
   OrderType,
   TimeInForce
 } from './types';
-import fetch, { Headers, Response } from 'node-fetch';
 
 interface BittrexClientOptions {
   baseUrl: string;

@@ -1,9 +1,10 @@
-require('dotenv').config();
-
 import log from 'fancy-log';
+
 import { BittrexApi } from './modules/api';
 import Bot from './modules/bot';
 import config from './modules/configuration';
+
+require('dotenv').config();
 
 log.info('Ichimoku bot is starting');
 log.info('This bot trades with the ichimoku trading system');
