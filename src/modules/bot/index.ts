@@ -49,7 +49,10 @@ export default class Bot {
     );
     await this.evaluateMarkets(marketSummaries.map(({ symbol }) => symbol));
 
-    // await this.report();
+    if(!this.settings.debug)
+    {
+      // await this.report();
+    }
 
     log.info(`########## Finished ${(now() - start).toFixed(5)} ms ##########`);
   };
@@ -124,14 +127,16 @@ export default class Bot {
         );
         const quantity = revenue / ticker.bidRate;
 
-        if (quantity > market.minTradeSize) {
-          const response = await this.api.sellLimit(
-            market.symbol,
-            quantity,
-            ticker.bidRate
-          );
+        if (!this.settings.debug) {
+          if (quantity > market.minTradeSize) {
+            const response = await this.api.sellLimit(
+                market.symbol,
+                quantity,
+                ticker.bidRate
+            );
 
-          log.info(response);
+            log.info(response);
+          }
           log.info(
             `${balance.currencySymbol} placed REVENUE SELL order for ${revenue} ${this.settings.mainMarket}`
           );
@@ -223,12 +228,14 @@ export default class Bot {
         const ticker = await this.api.getMarketTicker(marketSymbol);
         const market = await this.api.getMarket(marketSymbol);
         if (balance.available > market.minTradeSize) {
-          const response = await this.api.sellLimit(
-            market.symbol,
-            balance.available,
-            ticker.bidRate
-          );
-          log.info(response);
+          if(!this.settings.debug) {
+            const response = await this.api.sellLimit(
+                market.symbol,
+                balance.available,
+                ticker.bidRate
+            );
+            log.info(response);
+          }
           log.info(
             `Rejected ${balance.available} of ${marketSymbol} for ${ticker.bidRate} each`
           );
@@ -251,12 +258,14 @@ export default class Bot {
         if (mainMarket.available > this.settings.amountPerInvest) {
           const ticker = await this.api.getMarketTicker(marketSymbol);
           const quantity = this.settings.amountPerInvest / ticker.askRate;
-          const response = await this.api.buyLimit(
-            marketSymbol,
-            quantity,
-            ticker.askRate
-          );
-          log.info(response);
+          if(!this.settings.debug) {
+            const response = await this.api.buyLimit(
+                marketSymbol,
+                quantity,
+                ticker.askRate
+            );
+            log.info(response);
+          }
           log.info(
             `Invested ${this.settings.amountPerInvest} ${mainMarket.currencySymbol} to buy ${quantity} of ${marketSymbol}`
           );

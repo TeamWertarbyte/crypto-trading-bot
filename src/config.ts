@@ -18,7 +18,7 @@ export interface Config {
    */
   blacklist: string[];
   /**
-   * If true, all sell and buy requests get skipped
+   * If true, all buy and sell api requests get skipped
    */
   debug: boolean
   /**
