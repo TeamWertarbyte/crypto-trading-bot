@@ -1,4 +1,4 @@
-import { CandleInterval } from '../../types';
+import { CandleInterval } from '../api/types';
 
 export interface Configuration {
   /**

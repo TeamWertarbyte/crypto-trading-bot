@@ -7,14 +7,14 @@ import { BittrexApi } from '../api';
 import {
   Balance,
   Candle,
-  CandleReactStockCharts,
   Market,
   MarketDecision,
   MarketSummary,
   MarketTicker,
   Status
-} from '../../types';
+} from '../api/types';
 import { Configuration } from '../configuration/types';
+import { CandleReactStockCharts } from './types';
 
 /**
  * Awaitable sleep to keep API requests/min limit
