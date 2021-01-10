@@ -6,14 +6,6 @@ export interface Configuration {
    */
   amountPerInvest: number;
   /**
-   * Your Bittrex API KEY
-   */
-  bittrexApiKey: string;
-  /**
-   * Your Bittrex API SECRET
-   */
-  bittrexApiSecret: string;
-  /**
    * Coins to sell as soon as possible and never buy
    */
   blacklist: string[];

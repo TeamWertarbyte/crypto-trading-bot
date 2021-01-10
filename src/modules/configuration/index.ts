@@ -3,8 +3,6 @@ import { Configuration } from './types';
 
 const config: Configuration = {
   amountPerInvest: 50.0,
-  bittrexApiKey: '',
-  bittrexApiSecret: '',
   blacklist: ['DASH', 'GRIN', 'XMR', 'ZEC'],
   debug: true,
   HODL: ['BTC', 'ETH'],
