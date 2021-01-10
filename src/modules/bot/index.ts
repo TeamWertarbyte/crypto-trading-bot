@@ -334,13 +334,11 @@ export default class Bot {
     const balances = (await this.api.getBalances()).filter(
       ({ available }) => available > 0
     );
-    const usdtBalance = await this.api.getBalance('USDT');
+    let total = (await this.api.getBalance(this.config.mainMarket)).available;
     const btcTicker = await this.api.getMarketTicker(
       `BTC-${this.config.mainMarket}`
     );
     await sleep(3500);
-
-    let total = usdtBalance.available;
 
     for (const balance of balances) {
       const ticker = await this.api.getMarketTicker(
