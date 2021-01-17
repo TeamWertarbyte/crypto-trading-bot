@@ -1,11 +1,12 @@
 {
+  "HODL": ["BTC", "ETH"],
   "amountPerInvest": 50.0,
   "blacklist": ["DASH", "GRIN", "XMR", "ZEC"],
   "debug": false,
-  "HODL": ["BTC", "ETH"],
-  "refreshTimeout": 180000,
-  "tickInterval": "DAY_1",
+  "exactPositiveTicks": 2,
+  "ignoreTokenizedStocks": false,
   "mainMarket": "USDT",
   "minNegativeTicks": 2,
-  "exactPositiveTicks": 2
+  "refreshTimeout": 180000,
+  "tickInterval": "DAY_1"
 }

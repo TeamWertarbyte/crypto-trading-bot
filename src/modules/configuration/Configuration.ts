@@ -18,6 +18,10 @@ export default interface Configuration {
    */
   exactPositiveTicks: number;
   /**
+   * If true, it will not try to buy tokenized stocks. E.g. prohibited in your country
+   */
+  ignoreTokenizedStocks: boolean;
+  /**
    * Coins to hodl
    */
   HODL: string[];

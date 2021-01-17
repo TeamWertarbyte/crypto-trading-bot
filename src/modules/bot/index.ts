@@ -66,10 +66,17 @@ export default class Bot {
 
     const markets: Market[] = await this.api.getMarkets();
 
-    const filtered: Market[] = markets.filter(
-      ({ quoteCurrencySymbol, status }) =>
-        quoteCurrencySymbol === this.config.mainMarket && status === 'ONLINE'
-    );
+    const filtered: Market[] = markets
+      .filter(({ tags }) =>
+        this.config.ignoreTokenizedStocks
+          ? !tags.includes('TOKENIZED_SECURITY')
+          : true
+      )
+      .filter(
+        ({ quoteCurrencySymbol }) =>
+          quoteCurrencySymbol === this.config.mainMarket
+      )
+      .filter(({ status }) => status === 'ONLINE');
 
     log.info(
       `Fetched ${markets.length} and filtered ${filtered.length} ${
