@@ -118,8 +118,9 @@ Easiest way is to add an `.env` file into the root project folder `./.env` wit t
 BITTREX_API_KEY=YOUR_BITTREX_API_KEY
 BITTREX_API_SECRET=YOUR_BITTREX_API_SECRET
 ```
+otherwise see the provided `.env.template` file.
 
-If no keys were found you'll get the error message `No BITTREX_API_KEY and or BITTREX_API_SECRET found. Check your environment variables`
+If no keys were found you'll get an error message `No BITTREX_API_KEY and or BITTREX_API_SECRET found. Check your environment variables`
 
 ### Adapt the config
 Change the configuration parameters to your liking `./modules/configuration/index.ts`
