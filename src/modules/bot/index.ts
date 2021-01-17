@@ -54,8 +54,8 @@ export default class Bot {
     );
     await this.evaluateMarkets(marketSummaries.map(({ symbol }) => symbol));
 
-    if (!this.config.debug) {
-      // await this.report();
+    if (this.config.enableReporting && !this.config.debug) {
+      await this.report();
     }
 
     log.info(`########## Finished ${(now() - start).toFixed(5)} ms ##########`);

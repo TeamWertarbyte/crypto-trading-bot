@@ -14,6 +14,10 @@ export default interface Configuration {
    */
   debug: boolean;
   /**
+   * If true, the bot will call the report function at every end of round
+   */
+  enableReporting: boolean;
+  /**
    * Will invest when positive ticks are exactly this number
    */
   exactPositiveTicks: number;

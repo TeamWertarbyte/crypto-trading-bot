@@ -4,6 +4,7 @@
   "blacklist": ["DASH", "GRIN", "XMR", "ZEC"],
   "debug": false,
   "exactPositiveTicks": 2,
+  "enableReporting": false,
   "ignoreTokenizedStocks": false,
   "mainMarket": "USDT",
   "minNegativeTicks": 2,
