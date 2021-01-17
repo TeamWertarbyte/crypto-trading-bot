@@ -125,7 +125,7 @@ If no keys were found you'll get an error message `No BITTREX_API_KEY and or BIT
 ### Adapt the config
 Change the configuration parameters to your liking `config.json`
 
-For more details see the documentation in `./modules/configuration/types.ts`
+For more details see the documentation in `./modules/configuration/Configuration.ts`
 
 ## Build and start
 ```
