@@ -1,4 +1,6 @@
 import CryptoJS from 'crypto-js';
+import fetch, { Headers, Response } from 'node-fetch';
+
 import {
   Balance,
   BalanceResponse,
@@ -10,12 +12,8 @@ import {
   MarketSummary,
   MarketTicker,
   MarketTickerResponse,
-  NewOrder,
-  OrderDirection,
-  OrderType,
-  TimeInForce
-} from '../../types';
-import fetch, { Headers, Response } from 'node-fetch';
+  NewOrder
+} from './types';
 
 interface BittrexClientOptions {
   baseUrl: string;
@@ -177,11 +175,11 @@ export default class BittrexApi {
     limit: number
   ): Promise<CreatedOrder> => {
     const body: NewOrder = {
-      direction: OrderDirection.BUY,
+      direction: 'BUY',
       marketSymbol,
       quantity,
-      timeInForce: TimeInForce.GOOD_TIL_CANCELLED,
-      type: OrderType.LIMIT,
+      timeInForce: 'GOOD_TIL_CANCELLED',
+      type: 'LIMIT',
       limit
     };
 
@@ -206,11 +204,11 @@ export default class BittrexApi {
     limit: number
   ): Promise<CreatedOrder> => {
     const body: NewOrder = {
-      direction: OrderDirection.SELL,
+      direction: 'SELL',
       marketSymbol,
       quantity,
-      timeInForce: TimeInForce.FILL_OR_KILL,
-      type: OrderType.LIMIT,
+      timeInForce: 'FILL_OR_KILL',
+      type: 'LIMIT',
       limit
     };
 
@@ -229,18 +227,15 @@ export default class BittrexApi {
    * @param BTC - current market USDT price of BTC
    */
   report = async (USDT: number, BTC: number) => {
-    await fetch(
-      'https://YOUR_URL_HERE',
-      {
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        method: 'POST',
-        body: JSON.stringify({
-          totalBalance: Math.floor(USDT),
-          currentMarketBTC: Math.floor(BTC)
-        })
-      }
-    );
+    await fetch('https://YOUR_URL_HERE', {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        totalBalance: Math.floor(USDT),
+        currentMarketBTC: Math.floor(BTC)
+      })
+    });
   };
 }

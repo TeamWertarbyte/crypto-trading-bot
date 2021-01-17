@@ -1,12 +1,27 @@
 import log from 'fancy-log';
+
 import { BittrexApi } from './modules/api';
 import Bot from './modules/bot';
-import config from './config';
+import { getConfig } from './modules/configuration';
 
-log.info('Ichimoku bot is starting');
+require('dotenv').config();
+
 log.info('This bot trades with the ichimoku trading system');
 
-const api = new BittrexApi(config.bittrexApiKey, config.bittrexApiSecret);
+if (!process.env.BITTREX_API_KEY || !process.env.BITTREX_API_SECRET) {
+  throw new Error(
+    'No BITTREX_API_KEY and or BITTREX_API_SECRET found. Check your environment variables'
+  );
+}
+
+log.info('Loading configuration…');
+const config = getConfig();
+log.info('Successfully loaded configuration', config);
+
+const api = new BittrexApi(
+  process.env.BITTREX_API_KEY,
+  process.env.BITTREX_API_SECRET
+);
 const bot = new Bot(api, config);
 
 const loop = async () => {
