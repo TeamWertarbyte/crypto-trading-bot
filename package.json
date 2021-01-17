@@ -7,7 +7,7 @@
     "lint:fix": "eslint \"src/**/*.ts\" --fix",
     "start": "tsc && node dist/src/index.js",
     "start:dev": "ts-node-dev --respawn --transpile-only src/index.ts",
-    "ts:generate": "typescript-json-schema src/modules/configuration/Configuration.ts Configuration"
+    "ts:generate": "typescript-json-validator ./src/modules/configuration/Configuration.ts Configuration"
   },
   "dependencies": {
     "crypto-js": "^4.0.0",
