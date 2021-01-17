@@ -1,0 +1,11 @@
+{
+  "amountPerInvest": 50.0,
+  "blacklist": ["DASH", "GRIN", "XMR", "ZEC"],
+  "debug": false,
+  "HODL": ["BTC", "ETH"],
+  "refreshTimeout": 180000,
+  "tickInterval": "DAY_1",
+  "mainMarket": "USDT",
+  "minNegativeTicks": 2,
+  "exactPositiveTicks": 2
+}

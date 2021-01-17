@@ -12,10 +12,7 @@ import {
   MarketSummary,
   MarketTicker,
   MarketTickerResponse,
-  NewOrder,
-  OrderDirection,
-  OrderType,
-  TimeInForce
+  NewOrder
 } from './types';
 
 interface BittrexClientOptions {
@@ -178,11 +175,11 @@ export default class BittrexApi {
     limit: number
   ): Promise<CreatedOrder> => {
     const body: NewOrder = {
-      direction: OrderDirection.BUY,
+      direction: 'BUY',
       marketSymbol,
       quantity,
-      timeInForce: TimeInForce.GOOD_TIL_CANCELLED,
-      type: OrderType.LIMIT,
+      timeInForce: 'GOOD_TIL_CANCELLED',
+      type: 'LIMIT',
       limit
     };
 
@@ -207,11 +204,11 @@ export default class BittrexApi {
     limit: number
   ): Promise<CreatedOrder> => {
     const body: NewOrder = {
-      direction: OrderDirection.SELL,
+      direction: 'SELL',
       marketSymbol,
       quantity,
-      timeInForce: TimeInForce.FILL_OR_KILL,
-      type: OrderType.LIMIT,
+      timeInForce: 'FILL_OR_KILL',
+      type: 'LIMIT',
       limit
     };
 

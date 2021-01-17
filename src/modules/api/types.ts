@@ -1,13 +1,5 @@
-export enum Status {
-  ONLINE = 'ONLINE',
-  OFFLINE = 'OFFLINE'
-}
-export enum CandleInterval {
-  MINUTE_1 = 'MINUTE_1',
-  MINUTE_5 = 'MINUTE_5',
-  HOUR_1 = 'HOUR_1',
-  DAY_1 = 'DAY_1'
-}
+export type Status = 'ONLINE' | 'OFFLINE';
+export type CandleInterval = 'MINUTE_1' | 'MINUTE_5' | 'HOUR_1' | 'DAY_1';
 
 export interface Balance {
   currencySymbol: string;
@@ -46,13 +38,7 @@ export interface CandleResponse
   quoteVolume?: string;
 }
 
-export enum MainMarket {
-  BTC = 'BTC',
-  ETH = 'ETH',
-  EUR = 'EUR',
-  USD = 'USD',
-  USDT = 'USDT'
-}
+export type MainMarket = 'BTC' | 'ETH' | 'EUR' | 'USD' | 'USDT';
 
 export interface Market {
   symbol: string;
@@ -68,12 +54,7 @@ export interface Market {
   tags: string[];
 }
 
-export enum MarketDecision {
-  HODL = 'HODL',
-  INVEST = 'INVEST',
-  REJECT = 'REJECT',
-  NONE = 'NONE'
-}
+export type MarketDecision = 'HODL' | 'INVEST' | 'REJECT' | 'NONE';
 
 export interface MarketSummary {
   symbol: string;
@@ -99,29 +80,20 @@ export interface MarketTickerResponse
   askRate: string;
 }
 
-export enum OrderDirection {
-  BUY = 'BUY',
-  SELL = 'SELL'
-}
+export type OrderDirection = 'BUY' | 'SELL';
 
-export enum OrderType {
-  LIMIT = 'LIMIT',
-  MARKET = 'MARKET',
-  CEILING_LIMIT = 'CEILING_LIMIT',
-  CEILING_MARKET = 'CEILING_MARKET'
-}
+export type OrderType = 'LIMIT' | 'MARKET' | 'CEILING_LIMIT' | 'CEILING_MARKET';
 
 /**
  * https://bittrex.github.io/api/v3#topic-Placing-Orders
  */
-export enum TimeInForce {
-  GOOD_TIL_CANCELLED = 'GOOD_TIL_CANCELLED',
-  IMMEDIATE_OR_CANCEL = 'IMMEDIATE_OR_CANCEL',
-  FILL_OR_KILL = 'FILL_OR_KILL',
-  POST_ONLY_GOOD_TIL_CANCELLED = 'POST_ONLY_GOOD_TIL_CANCELLED',
-  BUY_NOW = 'BUY_NOW',
-  INSTANT = 'INSTANT'
-}
+export type TimeInForce =
+  | 'GOOD_TIL_CANCELLED'
+  | 'IMMEDIATE_OR_CANCEL'
+  | 'FILL_OR_KILL'
+  | 'POST_ONLY_GOOD_TIL_CANCELLED'
+  | 'BUY_NOW'
+  | 'INSTANT';
 
 export interface NewOrder {
   marketSymbol: string;

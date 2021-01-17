@@ -123,7 +123,7 @@ otherwise see the provided `.env.template` file.
 If no keys were found you'll get an error message `No BITTREX_API_KEY and or BITTREX_API_SECRET found. Check your environment variables`
 
 ### Adapt the config
-Change the configuration parameters to your liking `./modules/configuration/index.ts`
+Change the configuration parameters to your liking `config.json`
 
 For more details see the documentation in `./modules/configuration/types.ts`
 

@@ -11,10 +11,9 @@ import {
   Market,
   MarketDecision,
   MarketSummary,
-  MarketTicker,
-  Status
+  MarketTicker
 } from '../api/types';
-import { Configuration } from '../configuration/types';
+import Configuration from '../configuration/Configuration';
 
 import { CandleReactStockCharts } from './types';
 
@@ -34,9 +33,9 @@ export default class Bot {
 
   constructor(api: BittrexApi, config: Configuration) {
     if (config.debug) {
-      log.info('Debug mode is activated');
-      log.info('All buy and sell api requests will get skipped');
-      log.info('Will skip reporting');
+      log.info(
+        'Debug mode is activated. All buy and sell api requests will get skipped. Will skip reporting'
+      );
     }
 
     this.api = api;
@@ -69,8 +68,7 @@ export default class Bot {
 
     const filtered: Market[] = markets.filter(
       ({ quoteCurrencySymbol, status }) =>
-        quoteCurrencySymbol === this.config.mainMarket &&
-        status === Status.ONLINE
+        quoteCurrencySymbol === this.config.mainMarket && status === 'ONLINE'
     );
 
     log.info(
@@ -215,21 +213,21 @@ export default class Bot {
     positiveTicks: number,
     balance: Balance | undefined
   ) => {
-    let marketDecision = MarketDecision.NONE;
+    let marketDecision: MarketDecision = 'NONE';
     const currencySymbol = marketSymbol.split('-')[0];
 
     if (balance && balance.available > 0) {
       if (this.config.blacklist.includes(currencySymbol)) {
         log.info(`Will reject ${marketSymbol} due to blacklist`);
-        marketDecision = MarketDecision.REJECT;
+        marketDecision = 'REJECT';
       } else if (negativeTicks >= this.config.minNegativeTicks) {
         log.info(
           `Will reject ${marketSymbol} due to ${negativeTicks} negative ema ticks`
         );
-        marketDecision = MarketDecision.REJECT;
+        marketDecision = 'REJECT';
       }
 
-      if (marketDecision === MarketDecision.REJECT) {
+      if (marketDecision === 'REJECT') {
         const ticker = await this.api.getMarketTicker(marketSymbol);
         const market = await this.api.getMarket(marketSymbol);
         if (balance.available > market.minTradeSize) {
@@ -255,10 +253,10 @@ export default class Bot {
         log.info(
           `Should invest in ${marketSymbol} due to ${positiveTicks} positive ema ticks`
         );
-        marketDecision = MarketDecision.INVEST;
+        marketDecision = 'INVEST';
       }
 
-      if (marketDecision === MarketDecision.INVEST) {
+      if (marketDecision === 'INVEST') {
         const mainMarket = await this.api.getBalance(this.config.mainMarket);
         if (mainMarket.available > this.config.amountPerInvest) {
           const ticker = await this.api.getMarketTicker(marketSymbol);
@@ -292,10 +290,10 @@ export default class Bot {
     await sleep(1000);
 
     for (const marketSymbol of marketSymbols) {
-      let decision = MarketDecision.NONE;
+      let decision: MarketDecision = 'NONE';
 
       if (this.config.HODL.includes(marketSymbol)) {
-        decision = MarketDecision.HODL;
+        decision = 'HODL';
       } else {
         const candles: Candle[] = await this.api.getCandles(
           marketSymbol,

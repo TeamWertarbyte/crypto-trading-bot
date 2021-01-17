@@ -1,6 +1,6 @@
 import { CandleInterval, MainMarket } from '../api/types';
 
-export interface Configuration {
+export default interface Configuration {
   /**
    * Amount for every invest
    */
