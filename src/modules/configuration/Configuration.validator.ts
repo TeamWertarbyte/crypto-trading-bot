@@ -27,6 +27,38 @@ export const ConfigurationSchema = {
     MainMarket: {
       enum: ['BTC', 'ETH', 'EUR', 'USD', 'USDT'],
       type: 'string'
+    },
+    ShortAndLong: {
+      defaultProperties: [],
+      properties: {
+        l: {
+          type: 'number'
+        },
+        s: {
+          type: 'number'
+        }
+      },
+      required: ['l', 's'],
+      type: 'object'
+    },
+    ShortAndLongOverride: {
+      defaultProperties: [],
+      properties: {
+        coins: {
+          items: {
+            type: 'string'
+          },
+          type: 'array'
+        },
+        l: {
+          type: 'number'
+        },
+        s: {
+          type: 'number'
+        }
+      },
+      required: ['coins', 'l', 's'],
+      type: 'object'
     }
   },
   properties: {
@@ -51,6 +83,23 @@ export const ConfigurationSchema = {
     debug: {
       description: 'If true, all buy and sell api requests get skipped',
       type: 'boolean'
+    },
+    emaConfiguration: {
+      defaultProperties: [],
+      description: 'Defines ema short and long',
+      properties: {
+        default: {
+          $ref: '#/definitions/ShortAndLong'
+        },
+        override: {
+          items: {
+            $ref: '#/definitions/ShortAndLongOverride'
+          },
+          type: 'array'
+        }
+      },
+      required: ['default'],
+      type: 'object'
     },
     enableReporting: {
       description:
@@ -90,6 +139,7 @@ export const ConfigurationSchema = {
     'amountPerInvest',
     'blacklist',
     'debug',
+    'emaConfiguration',
     'enableReporting',
     'exactPositiveTicks',
     'ignoreTokenizedStocks',
