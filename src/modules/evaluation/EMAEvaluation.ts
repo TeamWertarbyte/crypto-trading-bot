@@ -8,6 +8,7 @@ import Configuration from '../configuration/Configuration';
 import { Balance, Candle, MarketDecision } from '../api/types';
 import { CandleReactStockCharts } from '../bot/types';
 import { sleep } from '../utils';
+import { EMAShortLong } from '../configuration/types';
 
 export class EMAEvaluation implements EvaluationInterface {
   api: BittrexApi;
@@ -18,7 +19,27 @@ export class EMAEvaluation implements EvaluationInterface {
     this.config = config;
   }
 
-  private calculateEMA = (candles: Candle[]): CandleReactStockCharts[] => {
+  private getEMAConfiguration = (currencySymbol: string): EMAShortLong => {
+    let configuration = this.config.emaConfiguration.default;
+
+    if (this.config.emaConfiguration.override?.length) {
+      for (const override of this.config.emaConfiguration.override) {
+        if (override.coins.includes(currencySymbol)) {
+          configuration = {
+            l: override.l,
+            s: override.s
+          };
+        }
+      }
+    }
+
+    return configuration;
+  };
+
+  private calculateEMA = (
+    candles: Candle[],
+    emaConfiguration: EMAShortLong
+  ): CandleReactStockCharts[] => {
     const parsedCandles: CandleReactStockCharts[] = candles.map((candle) => ({
       ...candle,
       date: candle.startsAt,
@@ -28,7 +49,7 @@ export class EMAEvaluation implements EvaluationInterface {
 
     const emaL = ema()
       .id(0)
-      .options({ windowSize: this.config.emaConfiguration.default.l })
+      .options({ windowSize: emaConfiguration.l })
       .merge((d: CandleReactStockCharts, c: number) => {
         d.emaL = c;
       })
@@ -36,7 +57,7 @@ export class EMAEvaluation implements EvaluationInterface {
 
     const emaS = ema()
       .id(1)
-      .options({ windowSize: this.config.emaConfiguration.default.s })
+      .options({ windowSize: emaConfiguration.s })
       .merge((d: CandleReactStockCharts, c: number) => {
         d.emaS = c;
       })
@@ -92,7 +113,7 @@ export class EMAEvaluation implements EvaluationInterface {
     }
 
     const { negativeTicks, positiveTicks } = this.countTicks(
-      this.calculateEMA(candles)
+      this.calculateEMA(candles, this.getEMAConfiguration(currencySymbol))
     );
 
     if (balance && balance.available > 0) {
