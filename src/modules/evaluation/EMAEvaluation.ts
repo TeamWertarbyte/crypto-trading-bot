@@ -22,27 +22,27 @@ export class EMAEvaluation implements EvaluationInterface {
     const parsedCandles: CandleReactStockCharts[] = candles.map((candle) => ({
       ...candle,
       date: candle.startsAt,
-      ema9: 0,
-      ema26: 0
+      emaS: 0,
+      emaL: 0
     }));
 
-    const ema26 = ema()
+    const emaL = ema()
       .id(0)
-      .options({ windowSize: 26 })
+      .options({ windowSize: this.config.emaConfiguration.default.l })
       .merge((d: CandleReactStockCharts, c: number) => {
-        d.ema26 = c;
+        d.emaL = c;
       })
-      .accessor((d: CandleReactStockCharts) => d.ema26);
+      .accessor((d: CandleReactStockCharts) => d.emaL);
 
-    const ema9 = ema()
+    const emaS = ema()
       .id(1)
-      .options({ windowSize: 9 })
+      .options({ windowSize: this.config.emaConfiguration.default.s })
       .merge((d: CandleReactStockCharts, c: number) => {
-        d.ema9 = c;
+        d.emaS = c;
       })
-      .accessor((d: CandleReactStockCharts) => d.ema9);
+      .accessor((d: CandleReactStockCharts) => d.emaS);
 
-    ema26(ema9(parsedCandles));
+    emaL(emaS(parsedCandles));
     return parsedCandles;
   };
 
@@ -50,14 +50,14 @@ export class EMAEvaluation implements EvaluationInterface {
     data: CandleReactStockCharts[]
   ): { positiveTicks: number; negativeTicks: number } => {
     const latestKeyFigure = data[data.length - 1];
-    const latestEmaDifference = latestKeyFigure.ema26 - latestKeyFigure.ema9;
+    const latestEmaDifference = latestKeyFigure.emaL - latestKeyFigure.emaS;
 
     let positiveTicks = 0;
     let negativeTicks = 0;
 
     for (let i = data.length - 1; i > 0; i--) {
-      const { ema26, ema9 } = data[i];
-      const emaDifference = ema26 - ema9;
+      const { emaL, emaS } = data[i];
+      const emaDifference = emaL - emaS;
 
       if (latestEmaDifference > 0 && emaDifference > 0) {
         negativeTicks += 1;
