@@ -16,16 +16,7 @@ import {
 import Configuration from '../configuration/Configuration';
 
 import { CandleReactStockCharts } from './types';
-
-/**
- * Awaitable sleep to keep API requests/min limit
- * @param ms - duration in milliseconds
- */
-const sleep = (ms: number): Promise<any> => {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-};
+import { sleep } from '../utils';
 
 export default class Bot {
   api: BittrexApi;
