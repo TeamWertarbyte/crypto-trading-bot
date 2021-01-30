@@ -298,8 +298,9 @@ export default class Bot {
 
     for (const marketSymbol of marketSymbols) {
       let decision: MarketDecision = 'NONE';
+      const currencySymbol = marketSymbol.split('-')[0];
 
-      if (this.config.HODL.includes(marketSymbol)) {
+      if (this.config.HODL.includes(currencySymbol)) {
         decision = 'HODL';
       } else {
         const candles: Candle[] = await this.api.getCandles(
@@ -312,8 +313,7 @@ export default class Bot {
             this.calculateEMA(candles)
           );
           const balance = balances.find(
-            ({ currencySymbol }) =>
-              currencySymbol === marketSymbol.split('-')[0]
+            (balance) => balance.currencySymbol === currencySymbol
           );
 
           await this.evaluateMarket(
