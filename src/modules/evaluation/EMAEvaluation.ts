@@ -29,6 +29,7 @@ export class EMAEvaluation implements EvaluationInterface {
             l: override.l,
             s: override.s
           };
+          break;
         }
       }
     }
