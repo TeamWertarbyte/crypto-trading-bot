@@ -24,11 +24,7 @@ export const ConfigurationSchema = {
       enum: ['DAY_1', 'HOUR_1', 'MINUTE_1', 'MINUTE_5'],
       type: 'string'
     },
-    MainMarket: {
-      enum: ['BTC', 'ETH', 'EUR', 'USD', 'USDT'],
-      type: 'string'
-    },
-    ShortAndLong: {
+    EMAShortLong: {
       defaultProperties: [],
       properties: {
         l: {
@@ -41,7 +37,7 @@ export const ConfigurationSchema = {
       required: ['l', 's'],
       type: 'object'
     },
-    ShortAndLongOverride: {
+    EMAShortLongOverride: {
       defaultProperties: [],
       properties: {
         coins: {
@@ -59,6 +55,10 @@ export const ConfigurationSchema = {
       },
       required: ['coins', 'l', 's'],
       type: 'object'
+    },
+    MainMarket: {
+      enum: ['BTC', 'ETH', 'EUR', 'USD', 'USDT'],
+      type: 'string'
     }
   },
   properties: {
@@ -89,11 +89,11 @@ export const ConfigurationSchema = {
       description: 'Defines ema short and long',
       properties: {
         default: {
-          $ref: '#/definitions/ShortAndLong'
+          $ref: '#/definitions/EMAShortLong'
         },
         override: {
           items: {
-            $ref: '#/definitions/ShortAndLongOverride'
+            $ref: '#/definitions/EMAShortLongOverride'
           },
           type: 'array'
         }

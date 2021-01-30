@@ -1,13 +1,13 @@
-interface ShortAndLong {
+export interface EMAShortLong {
   s: number;
   l: number;
 }
 
-interface ShortAndLongOverride extends ShortAndLong {
+export interface EMAShortLongOverride extends EMAShortLong {
   coins: string[];
 }
 
 export type EMAConfiguration = {
-  default: ShortAndLong;
-  override?: ShortAndLongOverride[];
+  default: EMAShortLong;
+  override?: EMAShortLongOverride[];
 };
