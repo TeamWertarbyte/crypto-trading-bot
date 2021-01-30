@@ -10,6 +10,9 @@ import { CandleReactStockCharts } from '../bot/types';
 import { sleep } from '../utils';
 import { EMAShortLong } from '../configuration/types';
 
+/**
+ * https://www.investopedia.com/terms/e/ema.asp
+ */
 export class EMAEvaluation implements EvaluationInterface {
   api: BittrexApi;
   config: Configuration;
