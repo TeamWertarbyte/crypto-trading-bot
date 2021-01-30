@@ -1,4 +1,4 @@
-# Cryptocurrency Trading Bot ![version](https://img.shields.io/badge/Version-2021.1.1-blue)
+# Cryptocurrency Trading Bot ![version](https://img.shields.io/badge/Version-2021.1.2-blue)
 I'm using this bot for a long time now and wanted to share it. 
 
 
