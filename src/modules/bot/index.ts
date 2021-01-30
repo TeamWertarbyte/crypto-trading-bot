@@ -1,8 +1,6 @@
 // @ts-ignore
 import log from 'fancy-log';
 import now from 'performance-now';
-// @ts-ignore
-import { ema } from 'react-stockcharts/lib/indicator';
 
 import { BittrexApi } from '../api';
 import {
@@ -15,8 +13,8 @@ import {
 } from '../api/types';
 import Configuration from '../configuration/Configuration';
 
-import { CandleReactStockCharts } from './types';
 import { sleep } from '../utils';
+import { EMAEvaluation } from '../evaluation/EMAEvaluation';
 
 export default class Bot {
   api: BittrexApi;
@@ -150,139 +148,9 @@ export default class Bot {
     log.info(`Collected revenue ${(now() - start).toFixed(5)} ms`);
   };
 
-  calculateEMA = (candles: Candle[]): CandleReactStockCharts[] => {
-    const parsedCandles: CandleReactStockCharts[] = candles.map((candle) => ({
-      ...candle,
-      date: candle.startsAt,
-      ema9: 0,
-      ema26: 0
-    }));
-
-    const ema26 = ema()
-      .id(0)
-      .options({ windowSize: 26 })
-      .merge((d: CandleReactStockCharts, c: number) => {
-        d.ema26 = c;
-      })
-      .accessor((d: CandleReactStockCharts) => d.ema26);
-
-    const ema9 = ema()
-      .id(1)
-      .options({ windowSize: 9 })
-      .merge((d: CandleReactStockCharts, c: number) => {
-        d.ema9 = c;
-      })
-      .accessor((d: CandleReactStockCharts) => d.ema9);
-
-    ema26(ema9(parsedCandles));
-    return parsedCandles;
-  };
-
-  countEMATicks = (
-    data: CandleReactStockCharts[]
-  ): { positiveTicks: number; negativeTicks: number } => {
-    const latestKeyFigure = data[data.length - 1];
-    const latestEmaDifference = latestKeyFigure.ema26 - latestKeyFigure.ema9;
-
-    let positiveTicks = 0;
-    let negativeTicks = 0;
-
-    for (let i = data.length - 1; i > 0; i--) {
-      const { ema26, ema9 } = data[i];
-      const emaDifference = ema26 - ema9;
-
-      if (latestEmaDifference > 0 && emaDifference > 0) {
-        negativeTicks += 1;
-      } else if (latestEmaDifference < 0 && emaDifference < 0) {
-        positiveTicks += 1;
-      } else {
-        break;
-      }
-    }
-    return {
-      negativeTicks,
-      positiveTicks
-    };
-  };
-
-  evaluateMarket = async (
-    marketSymbol: string,
-    negativeTicks: number,
-    positiveTicks: number,
-    balance: Balance | undefined
-  ) => {
-    let marketDecision: MarketDecision = 'NONE';
-    const currencySymbol = marketSymbol.split('-')[0];
-
-    if (balance && balance.available > 0) {
-      if (this.config.blacklist.includes(currencySymbol)) {
-        log.info(`Will reject ${marketSymbol} due to blacklist`);
-        marketDecision = 'REJECT';
-      } else if (negativeTicks >= this.config.minNegativeTicks) {
-        log.info(
-          `Will reject ${marketSymbol} due to ${negativeTicks} negative ema ticks`
-        );
-        marketDecision = 'REJECT';
-      }
-
-      if (marketDecision === 'REJECT') {
-        const ticker = await this.api.getMarketTicker(marketSymbol);
-        const market = await this.api.getMarket(marketSymbol);
-        if (balance.available > market.minTradeSize) {
-          if (!this.config.debug) {
-            const response = await this.api.sellLimit(
-              market.symbol,
-              balance.available,
-              ticker.bidRate
-            );
-            log.info(response);
-          }
-          log.info(
-            `Rejected ${balance.available} of ${marketSymbol} for ${ticker.bidRate} each`
-          );
-          await sleep(2500);
-        }
-      }
-    } else if (!balance || (balance && balance.available === 0)) {
-      if (
-        !this.config.blacklist.includes(currencySymbol) &&
-        positiveTicks === this.config.exactPositiveTicks
-      ) {
-        log.info(
-          `Should invest in ${marketSymbol} due to ${positiveTicks} positive ema ticks`
-        );
-        marketDecision = 'INVEST';
-      }
-
-      if (marketDecision === 'INVEST') {
-        const mainMarket = await this.api.getBalance(this.config.mainMarket);
-        if (mainMarket.available > this.config.amountPerInvest) {
-          const ticker = await this.api.getMarketTicker(marketSymbol);
-          const quantity = this.config.amountPerInvest / ticker.askRate;
-          if (!this.config.debug) {
-            const response = await this.api.buyLimit(
-              marketSymbol,
-              quantity,
-              ticker.askRate
-            );
-            log.info(response);
-          }
-          log.info(
-            `Invested ${this.config.amountPerInvest} ${mainMarket.currencySymbol} to buy ${quantity} of ${marketSymbol}`
-          );
-          await sleep(2500);
-        } else {
-          log.info(
-            `${mainMarket.available} ${this.config.mainMarket} is not enough for further investments `
-          );
-        }
-        await sleep(1000);
-      }
-    }
-  };
-
   evaluateMarkets = async (marketSymbols: string[]) => {
     const start = now();
+    const emaEvaluation = new EMAEvaluation(this.api, this.config);
 
     const balances: Balance[] = await this.api.getBalances();
     await sleep(1000);
@@ -300,19 +168,55 @@ export default class Bot {
         );
         await sleep(1500);
         if (candles?.length) {
-          const { negativeTicks, positiveTicks } = this.countEMATicks(
-            this.calculateEMA(candles)
-          );
           const balance = balances.find(
             (balance) => balance.currencySymbol === currencySymbol
           );
 
-          await this.evaluateMarket(
-            marketSymbol,
-            negativeTicks,
-            positiveTicks,
-            balance
-          );
+          decision = await emaEvaluation.evaluate(marketSymbol, balance);
+
+          if (decision === 'INVEST') {
+            const mainMarket = await this.api.getBalance(
+              this.config.mainMarket
+            );
+            if (mainMarket.available > this.config.amountPerInvest) {
+              const ticker = await this.api.getMarketTicker(marketSymbol);
+              const quantity = this.config.amountPerInvest / ticker.askRate;
+              if (!this.config.debug) {
+                const response = await this.api.buyLimit(
+                  marketSymbol,
+                  quantity,
+                  ticker.askRate
+                );
+                log.info(response);
+              }
+              log.info(
+                `Invested ${this.config.amountPerInvest} ${mainMarket.currencySymbol} to buy ${quantity} of ${marketSymbol}`
+              );
+              await sleep(2500);
+            } else {
+              log.info(
+                `${mainMarket.available} ${this.config.mainMarket} is not enough for further investments `
+              );
+            }
+            await sleep(1000);
+          } else if (balance && decision === 'REJECT') {
+            const ticker = await this.api.getMarketTicker(marketSymbol);
+            const market = await this.api.getMarket(marketSymbol);
+            if (balance.available > market.minTradeSize) {
+              if (!this.config.debug) {
+                const response = await this.api.sellLimit(
+                  market.symbol,
+                  balance.available,
+                  ticker.bidRate
+                );
+                log.info(response);
+              }
+              log.info(
+                `Rejected ${balance.available} of ${marketSymbol} for ${ticker.bidRate} each`
+              );
+              await sleep(2500);
+            }
+          }
         } else {
           log.info(`Got empty candles for ${marketSymbol}`);
         }
