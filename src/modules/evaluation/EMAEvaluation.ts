@@ -18,7 +18,7 @@ export class EMAEvaluation implements EvaluationInterface {
     this.config = config;
   }
 
-  calculateEMA = (candles: Candle[]): CandleReactStockCharts[] => {
+  private calculateEMA = (candles: Candle[]): CandleReactStockCharts[] => {
     const parsedCandles: CandleReactStockCharts[] = candles.map((candle) => ({
       ...candle,
       date: candle.startsAt,
@@ -46,7 +46,7 @@ export class EMAEvaluation implements EvaluationInterface {
     return parsedCandles;
   };
 
-  countTicks = (
+  private countTicks = (
     data: CandleReactStockCharts[]
   ): { positiveTicks: number; negativeTicks: number } => {
     const latestKeyFigure = data[data.length - 1];
