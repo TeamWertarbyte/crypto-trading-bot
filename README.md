@@ -1,4 +1,4 @@
-# Cryptocurrency Trading Bot ![version](https://img.shields.io/badge/Version-2021.1.2-blue)
+# Cryptocurrency Trading Bot ![version](https://img.shields.io/badge/Version-2021.1.3-blue)
 I'm using this bot for a long time now and wanted to share it. 
 
 
@@ -30,77 +30,6 @@ Doge: DJ6JwaBJ6QwyaDLfYsNdre52sf1C7Abm5B
 
 Litecoin: LSVno86JENvnEmdCrY6sVNGGe7KM2HyLKm
 
-## Program Sequence
-
-## Main loop
-```
-  start = async () => {
-    const start = now();
-    log.info(`########## Started ichimoku ##########`);
-
-    await this.collectRevenue();
-
-    const markets: Market[] = await this.getMarkets();
-    const marketSummaries: MarketSummary[] = await this.getMarketSummaries(
-      markets
-    );
-    await this.evaluateMarkets(marketSummaries.map(({ symbol }) => symbol));
-
-    // await this.report();
-
-    log.info(`########## Finished ${(now() - start).toFixed(5)} ms ##########`);
-  };
-```
-
-## Collecting Revenue
-```
-    await this.collectRevenue();
-```
-* Fetch you current balances
-  * Only checks assets where available coins are greater than 0
-  * Ignore assets that you want to HODL see config
-* Iterate over every balance
-  * Fetch current market ticker for this balance (e.g. `ETH-USDT`)
-  * Calculates how much revenue is already earned (current value minus invest)
-  * When greate than invest try to sell that bit
-    * e.g. Current value 57 USDT with an invest of 50 USDT -> sell 7 USDT worth
-    * It can only sell when the quantity will be greater than the minimum trade size allowed by bittrex
-    
-## Evaluate Markets
-```
-    const markets: Market[] = await this.getMarkets();
-    const marketSummaries: MarketSummary[] = await this.getMarketSummaries(
-      markets
-    );
-    await this.evaluateMarkets(marketSummaries.map(({ symbol }) => symbol));
-```
-* Filter the markets `getMarkets` and `getMarketSummaries`
-  * Only use markets using the `config.mainMarket` here `USDT`
-  * Only use market which are `ONLINE`
-  * Check against market summary to see if the quote volume is greater than 0 (market is being traded on)
-* Use those filtered marked for the next step -> `evaluateMarkets`
-* Iterate over every market
-  * Ignore HODL markets (just buy some manually and HODL on)
-  * Get candles
-  * Count EMA ticks. Positive and negative
-  * If you got some of that asset in your balance
-    * If it's on the blacklist it will sell it. E.g. Bittrex delisting coins
-    * If it got too many negative ticks it will sell it
-  * If you don't have any of that asset in you balance
-    * If it's not blacklisted and got the amount of positiv ticks it will buy
-
-**Selling**: It will be a limit sell with `timeInForce: TimeInForce.FILL_OR_KILL` Meaning, either it gets sold directly or the order gets canceled and will be tried next round.
-
-**Buying**: The positiv ticks need to be exact the value defined in the config. This will prevent buying into a market "too late"
-
-## (optional) Report
-```
-    // await this.report();
-```
-Enable this line to report your current state. You will also need to enter your url in `api/BittrexApi.ts report()`
-
-This could be used to track your bot and how much your balances are worth over time. 
-
 ## Requirements
 Node.js
 
@@ -121,6 +50,11 @@ BITTREX_API_SECRET=YOUR_BITTREX_API_SECRET
 otherwise see the provided `.env.template` file.
 
 If no keys were found you'll get an error message `No BITTREX_API_KEY and or BITTREX_API_SECRET found. Check your environment variables`
+
+### (optional) Setup crash reporting with sentry
+Create a free monitoring project https://sentry.io/
+
+Set `SENTRY_DSN` as environment variable.
 
 ### Adapt the config
 Change the configuration parameters to your liking `config.json`
