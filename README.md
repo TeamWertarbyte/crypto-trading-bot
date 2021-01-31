@@ -1,16 +1,13 @@
 # Cryptocurrency Trading Bot ![version](https://img.shields.io/badge/Version-2021.1.3-blue)
 I'm using this bot for a long time now and wanted to share it. 
 
-
 Feel free to make it your own. PRs are welcome!
 
 ## USE AT YOUR OWN RISK
-A trading bot that does what you order him to do (use at your own risk)
-
-I'm not responsible for anything
+A trading bot that does what you order him to do (use at your own risk) I'm not responsible for anything
 
 ## EMA crossover strategy
-It's using the ema crossover strategy. But instead of EMA 5 and EMA 20 I'm using EMA 9 and EMA 26
+It's using the ema crossover strategy
 
 https://www.theforexchronicles.com/the-ema-5-and-ema-20-crossover-trading-strategy/
 
@@ -35,7 +32,7 @@ Node.js
 
 As package manager install yarn https://classic.yarnpkg.com/en/docs/install
 
-## Usage
+## Configuration
 
 ### Bittrex API key and API secret
 How to get: https://support.coinigy.com/hc/en-us/articles/360001123973-How-do-I-find-my-API-key-on-Bittrex-com-
@@ -51,17 +48,19 @@ otherwise see the provided `.env.template` file.
 
 If no keys were found you'll get an error message `No BITTREX_API_KEY and or BITTREX_API_SECRET found. Check your environment variables`
 
-### (optional) Setup crash reporting with sentry
-Create a free monitoring project https://sentry.io/
-
-Set `SENTRY_DSN` as environment variable.
-
 ### Adapt the config
 Change the configuration parameters to your liking `config.json`
 
 For more details see the documentation in `./modules/configuration/Configuration.ts`
 
-## Build and start
+### (optional) Setup crash reporting with sentry
+Create a free monitoring project https://sentry.io/
+
+Set `SENTRY_DSN` as environment variable.
+
+## Run and development
+
+### Build and start
 ```
 yarn
 yarn start
@@ -69,7 +68,7 @@ yarn start
 
 This will create a `/dist` folder and start the containing `/dist/index.js` file
 
-## Build bundle
+### Build bundle
 ```
 yarn
 yarn build
@@ -77,7 +76,7 @@ yarn build
 
 This will create a `/dist` folder containing the created `.js` files. You could now deploy it on any server you like
 
-## Development
+### Development
 ```
 yarn
 yarn start:dev
