@@ -83,3 +83,7 @@ yarn start:dev
 ```
 
 This will start the bot in a watch mode. On every code change it will recompile and restart
+
+## Discussion and wiki
+
+Feel free to join the [discussion](https://github.com/TeamWertarbyte/crypto-trading-bot/discussions) and [wiki](https://github.com/TeamWertarbyte/crypto-trading-bot/wiki) here on github
