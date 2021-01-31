@@ -1,4 +1,5 @@
 import { CandleInterval, MainMarket } from '../api/types';
+import { EMAConfiguration } from './types';
 
 export default interface Configuration {
   /**
@@ -46,4 +47,8 @@ export default interface Configuration {
    * Defines the interval used for candles
    */
   tickInterval: CandleInterval;
+  /**
+   * Defines ema short and long
+   */
+  emaConfiguration: EMAConfiguration;
 }

@@ -9,5 +9,11 @@
   "mainMarket": "USDT",
   "minNegativeTicks": 2,
   "refreshTimeout": 180000,
-  "tickInterval": "DAY_1"
+  "tickInterval": "DAY_1",
+  "emaConfiguration": {
+    "default": {
+      "s": 9,
+      "l": 26
+    }
+  }
 }
