@@ -1,5 +1,5 @@
 import log from 'fancy-log';
-
+import * as Sentry from '@sentry/node';
 import { BittrexApi } from './modules/api';
 import Bot from './modules/bot';
 import { getConfig } from './modules/configuration';
@@ -18,6 +18,12 @@ log.info('Loading configuration…');
 const config = getConfig();
 log.info('Successfully loaded configuration', config);
 
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+  tracesSampleRate: 1.0,
+  debug: config.debug
+});
+
 const api = new BittrexApi(
   process.env.BITTREX_API_KEY,
   process.env.BITTREX_API_SECRET
@@ -25,7 +31,12 @@ const api = new BittrexApi(
 const bot = new Bot(api, config);
 
 const loop = async () => {
-  await bot.start();
+  try {
+    await bot.start();
+  } catch (e) {
+    log.warn(e);
+    Sentry.captureException(e);
+  }
   setTimeout(() => loop(), config.refreshTimeout);
 };
 
