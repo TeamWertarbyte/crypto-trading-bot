@@ -1,6 +1,6 @@
 {
   "name": "crypto-trading-bot",
-  "version": "2021.1.2",
+  "version": "2021.1.3",
   "scripts": {
     "build": "tsc",
     "lint": "eslint \"src/**/*.ts\"",
