@@ -7,6 +7,6 @@ import { Candle } from '../api/types';
 export interface CandleReactStockCharts
   extends Omit<Candle, 'startsAt' | 'quoteVolume'> {
   date: Date;
-  ema9: number;
-  ema26: number;
+  emaS: number;
+  emaL: number;
 }
