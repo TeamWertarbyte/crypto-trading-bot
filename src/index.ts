@@ -3,10 +3,11 @@ import * as Sentry from '@sentry/node';
 import { BittrexApi } from './modules/api';
 import Bot from './modules/bot';
 import { getConfig } from './modules/configuration';
+import { version } from '../package.json';
 
 require('dotenv').config();
 
-log.info('This bot trades with the ichimoku trading system');
+log.info(`Loading up ichimoku trading bot version ${version}`);
 
 if (!process.env.BITTREX_API_KEY || !process.env.BITTREX_API_SECRET) {
   throw new Error(
