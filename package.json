@@ -1,13 +1,16 @@
 {
   "name": "crypto-trading-bot",
   "version": "2021.1.3",
+  "main": "./src/index.js",
+  "bin": "./src/index.js",
   "scripts": {
     "build": "tsc",
     "lint": "eslint \"src/**/*.ts\"",
     "lint:fix": "eslint \"src/**/*.ts\" --fix",
     "start": "tsc && node dist/src/index.js",
     "start:dev": "ts-node-dev --respawn --transpile-only src/index.ts",
-    "ts:config-generate": "typescript-json-validator ./src/modules/configuration/Configuration.ts Configuration"
+    "ts:config-generate": "typescript-json-validator ./src/modules/configuration/Configuration.ts Configuration",
+    "pkg": "pkg ./dist"
   },
   "dependencies": {
     "@sentry/node": "^6.0.3",
@@ -41,6 +44,7 @@
     "eslint-plugin-promise": ">=4.2.1",
     "lint-staged": "^10.0.8",
     "node-notifier": "^9.0.0",
+    "pkg": "^4.4.9",
     "prettier": "^1.19.1",
     "ts-node-dev": "^1.1.1",
     "tslint": "^6.1.3",
