@@ -17,7 +17,7 @@
     }
   },
   "stableCoins": {
-    "coins": [],
+    "coins": ["DAI", "PAX", "SBD", "USDC", "USDT"],
     "ignore": true
   }
 }
