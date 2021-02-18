@@ -15,5 +15,9 @@
       "s": 9,
       "l": 26
     }
+  },
+  "stableCoins": {
+    "coins": [],
+    "ignore": true
   }
 }
