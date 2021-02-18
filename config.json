@@ -17,7 +17,19 @@
     }
   },
   "stableCoins": {
-    "coins": ["DAI", "PAX", "SBD", "USDC", "USDT"],
+    "coins": [
+      "BGBP",
+      "BUSD",
+      "DAI",
+      "EURS",
+      "GUSD",
+      "PAX",
+      "SBD",
+      "TUSD",
+      "USDC",
+      "USDS",
+      "USDT"
+    ],
     "ignore": true
   }
 }
