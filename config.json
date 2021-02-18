@@ -20,6 +20,7 @@
     "coins": [
       "BGBP",
       "BUSD",
+      "CUSD",
       "DAI",
       "EURS",
       "GUSD",
@@ -27,8 +28,10 @@
       "SBD",
       "TUSD",
       "USDC",
+      "USDN",
       "USDS",
-      "USDT"
+      "USDT",
+      "UST"
     ],
     "ignore": true
   }
