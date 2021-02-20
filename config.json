@@ -15,5 +15,48 @@
       "s": 9,
       "l": 26
     }
+  },
+  "stableCoins": {
+    "coins": [
+      "ANCT",
+      "BGBP",
+      "BGBP",
+      "BITCNY",
+      "BITEUR",
+      "BITUSD",
+      "BUSD",
+      "CONST",
+      "CUSD",
+      "DAI",
+      "EBASE",
+      "EURS",
+      "EUSD",
+      "EOSDT",
+      "GUSD",
+      "HUSD",
+      "IDRT",
+      "KRT",
+      "PAX",
+      "NIRX",
+      "QC",
+      "SBD",
+      "SDUSD",
+      "TUSD",
+      "USDC",
+      "USDK",
+      "USDQ",
+      "USDN",
+      "USDS",
+      "USDT",
+      "USDX",
+      "USC",
+      "USNBT",
+      "UST",
+      "VNDC",
+      "WSD",
+      "XAUT",
+      "XEUR"
+    ],
+    "ignore": true
   }
 }

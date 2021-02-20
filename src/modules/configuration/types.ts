@@ -11,3 +11,8 @@ export type EMAConfiguration = {
   default: EMAShortLong;
   override?: EMAShortLongOverride[];
 };
+
+export type StableCoinsConfiguration = {
+  coins: string[];
+  ignore: boolean;
+};
