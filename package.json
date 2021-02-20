@@ -21,7 +21,8 @@
     "performance-now": "^2.1.0",
     "react": "^15.6.1",
     "react-stockcharts": "^0.7.0-beta.13",
-    "signalr-client": "0.0.17"
+    "signalr-client": "0.0.17",
+    "ws": "^7.4.3"
   },
   "devDependencies": {
     "@types/crypto-js": "^4.0.0",
@@ -72,5 +73,9 @@
     "endOfLine": "auto"
   },
   "author": "wertarbyte",
-  "homepage": "https://github.com/TeamWertarbyte/crypto-trading-bot#readme"
+  "homepage": "https://github.com/TeamWertarbyte/crypto-trading-bot#readme",
+  "optionalDependencies": {
+    "bufferutil": "^4.0.3",
+    "utf-8-validate": "^5.0.4"
+  }
 }
