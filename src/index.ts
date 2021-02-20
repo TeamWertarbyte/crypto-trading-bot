@@ -1,6 +1,6 @@
 import log from 'fancy-log';
 import * as Sentry from '@sentry/node';
-import { BittrexApi } from './modules/api';
+import { BittrexRestApi } from './modules/api';
 import Bot from './modules/bot';
 import { getConfig } from './modules/configuration';
 
@@ -24,7 +24,7 @@ Sentry.init({
   debug: config.debug
 });
 
-const api = new BittrexApi(
+const api = new BittrexRestApi(
   process.env.BITTREX_API_KEY,
   process.env.BITTREX_API_SECRET
 );

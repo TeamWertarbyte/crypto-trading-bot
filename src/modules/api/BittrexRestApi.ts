@@ -27,7 +27,7 @@ interface BittrexClientOptions {
 /**
  * https://bittrex.github.io/api/v3
  */
-export default class BittrexApi {
+export default class BittrexRestApi {
   apiKey: string;
   apiSecret: string;
   options: BittrexClientOptions;

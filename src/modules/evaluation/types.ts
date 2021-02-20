@@ -1,9 +1,9 @@
-import { BittrexApi } from '../api';
+import { BittrexRestApi } from '../api';
 import Configuration from '../configuration/Configuration';
 import { Balance, MarketDecision } from '../api/types';
 
 export interface EvaluationInterface {
-  api: BittrexApi;
+  api: BittrexRestApi;
   config: Configuration;
   evaluate: (
     marketSymbol: string,

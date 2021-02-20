@@ -2,7 +2,7 @@
 import log from 'fancy-log';
 import now from 'performance-now';
 
-import { BittrexApi } from '../api';
+import { BittrexRestApi } from '../api';
 import {
   Balance,
   Candle,
@@ -17,10 +17,10 @@ import { sleep } from '../utils';
 import { EMAEvaluation } from '../evaluation/EMAEvaluation';
 
 export default class Bot {
-  api: BittrexApi;
+  api: BittrexRestApi;
   config: Configuration;
 
-  constructor(api: BittrexApi, config: Configuration) {
+  constructor(api: BittrexRestApi, config: Configuration) {
     if (config.debug) {
       log.info(
         'Debug mode is activated. All buy and sell api requests will get skipped. Will skip reporting'

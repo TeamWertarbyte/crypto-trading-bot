@@ -3,7 +3,7 @@ import log from 'fancy-log';
 // @ts-ignore
 import { ema } from 'react-stockcharts/lib/indicator';
 import { EvaluationInterface } from './types';
-import { BittrexApi } from '../api';
+import { BittrexRestApi } from '../api';
 import Configuration from '../configuration/Configuration';
 import { Balance, Candle, MarketDecision } from '../api/types';
 import { CandleReactStockCharts } from '../bot/types';
@@ -14,10 +14,10 @@ import { EMAShortLong } from '../configuration/types';
  * https://www.investopedia.com/terms/e/ema.asp
  */
 export class EMAEvaluation implements EvaluationInterface {
-  api: BittrexApi;
+  api: BittrexRestApi;
   config: Configuration;
 
-  constructor(api: BittrexApi, config: Configuration) {
+  constructor(api: BittrexRestApi, config: Configuration) {
     this.api = api;
     this.config = config;
   }

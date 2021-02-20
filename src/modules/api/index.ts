@@ -1,1 +1,1 @@
-export { default as BittrexApi } from './BittrexApi';
+export { default as BittrexRestApi } from './BittrexRestApi';
