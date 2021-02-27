@@ -129,6 +129,23 @@ export const ConfigurationSchema = {
       description: 'Amount in milliseconds to wait before next round',
       type: 'number'
     },
+    stableCoins: {
+      defaultProperties: [],
+      description: 'Section for ignoring a set of listed stable coins',
+      properties: {
+        coins: {
+          items: {
+            type: 'string'
+          },
+          type: 'array'
+        },
+        ignore: {
+          type: 'boolean'
+        }
+      },
+      required: ['coins', 'ignore'],
+      type: 'object'
+    },
     tickInterval: {
       $ref: '#/definitions/CandleInterval',
       description: 'Defines the interval used for candles'
@@ -146,6 +163,7 @@ export const ConfigurationSchema = {
     'mainMarket',
     'minNegativeTicks',
     'refreshTimeout',
+    'stableCoins',
     'tickInterval'
   ],
   type: 'object'

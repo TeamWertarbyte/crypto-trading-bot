@@ -1,5 +1,5 @@
 import { CandleInterval, MainMarket } from '../api/types';
-import { EMAConfiguration } from './types';
+import { EMAConfiguration, StableCoinsConfiguration } from './types';
 
 export default interface Configuration {
   /**
@@ -43,6 +43,10 @@ export default interface Configuration {
    * Amount in milliseconds to wait before next round
    */
   refreshTimeout: number;
+  /**
+   * Section for ignoring a set of listed stable coins
+   */
+  stableCoins: StableCoinsConfiguration;
   /**
    * Defines the interval used for candles
    */

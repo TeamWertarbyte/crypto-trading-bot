@@ -56,6 +56,11 @@ export default class Bot {
     const markets: Market[] = await this.api.getMarkets();
 
     const filtered: Market[] = markets
+      .filter(({ quoteCurrencySymbol }) =>
+        this.config.stableCoins.ignore
+          ? !this.config.stableCoins.coins.includes(quoteCurrencySymbol)
+          : true
+      )
       .filter(({ tags }) =>
         this.config.ignoreTokenizedStocks
           ? !tags.includes('TOKENIZED_SECURITY')
@@ -107,6 +112,11 @@ export default class Bot {
 
     const balances: Balance[] = (await this.api.getBalances())
       .filter(({ available }) => available > 0)
+      .filter(({ currencySymbol }) =>
+        this.config.stableCoins.ignore
+          ? !this.config.stableCoins.coins.includes(currencySymbol)
+          : true
+      )
       .filter(
         ({ currencySymbol }) => !this.config.HODL.includes(currencySymbol)
       );
