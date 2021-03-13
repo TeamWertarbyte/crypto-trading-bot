@@ -176,63 +176,52 @@ export default class Bot {
       if (this.config.HODL.includes(currencySymbol)) {
         decision = 'HODL';
       } else {
-        const candles: Candle[] = await this.api.getCandles(
-          marketSymbol,
-          this.config.tickInterval
+        const balance = balances.find(
+          (balance) => balance.currencySymbol === currencySymbol
         );
-        await sleep(1500);
-        if (candles?.length) {
-          const balance = balances.find(
-            (balance) => balance.currencySymbol === currencySymbol
-          );
 
-          decision = await emaEvaluation.evaluate(marketSymbol, balance);
+        decision = await emaEvaluation.evaluate(marketSymbol, balance);
 
-          if (decision === 'INVEST') {
-            const mainMarket = await this.api.getBalance(
-              this.config.mainMarket
-            );
-            if (mainMarket.available > this.config.amountPerInvest) {
-              const ticker = await this.api.getMarketTicker(marketSymbol);
-              const quantity = this.config.amountPerInvest / ticker.askRate;
-              if (!this.config.debug) {
-                const response = await this.api.buyLimit(
-                  marketSymbol,
-                  quantity,
-                  ticker.askRate
-                );
-                log.info(response);
-              }
-              log.info(
-                `Invested ${this.config.amountPerInvest} ${mainMarket.currencySymbol} to buy ${quantity} of ${marketSymbol}`
-              );
-              await sleep(2500);
-            } else {
-              log.info(
-                `${mainMarket.available} ${this.config.mainMarket} is not enough for further investments `
-              );
-            }
-            await sleep(1000);
-          } else if (balance && decision === 'REJECT') {
+        if (decision === 'INVEST') {
+          const mainMarket = await this.api.getBalance(this.config.mainMarket);
+          if (mainMarket.available > this.config.amountPerInvest) {
             const ticker = await this.api.getMarketTicker(marketSymbol);
-            const market = await this.api.getMarket(marketSymbol);
-            if (balance.available > market.minTradeSize) {
-              if (!this.config.debug) {
-                const response = await this.api.sellLimit(
-                  market.symbol,
-                  balance.available,
-                  ticker.bidRate
-                );
-                log.info(response);
-              }
-              log.info(
-                `Rejected ${balance.available} of ${marketSymbol} for ${ticker.bidRate} each`
+            const quantity = this.config.amountPerInvest / ticker.askRate;
+            if (!this.config.debug) {
+              const response = await this.api.buyLimit(
+                marketSymbol,
+                quantity,
+                ticker.askRate
               );
-              await sleep(2500);
+              log.info(response);
             }
+            log.info(
+              `Invested ${this.config.amountPerInvest} ${mainMarket.currencySymbol} to buy ${quantity} of ${marketSymbol}`
+            );
+            await sleep(2500);
+          } else {
+            log.info(
+              `${mainMarket.available} ${this.config.mainMarket} is not enough for further investments `
+            );
           }
-        } else {
-          log.info(`Got empty candles for ${marketSymbol}`);
+          await sleep(1000);
+        } else if (balance && decision === 'REJECT') {
+          const ticker = await this.api.getMarketTicker(marketSymbol);
+          const market = await this.api.getMarket(marketSymbol);
+          if (balance.available > market.minTradeSize) {
+            if (!this.config.debug) {
+              const response = await this.api.sellLimit(
+                market.symbol,
+                balance.available,
+                ticker.bidRate
+              );
+              log.info(response);
+            }
+            log.info(
+              `Rejected ${balance.available} of ${marketSymbol} for ${ticker.bidRate} each`
+            );
+            await sleep(2500);
+          }
         }
       }
     }
