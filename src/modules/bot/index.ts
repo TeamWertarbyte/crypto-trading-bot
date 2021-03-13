@@ -69,7 +69,7 @@ export default class Bot {
     });
 
     const markets: Market[] = await this.api.getMarkets();
-    progressBar.increment(1);
+    progressBar?.increment(1);
 
     let filtered: Market[] = markets
       .filter(
@@ -77,14 +77,14 @@ export default class Bot {
           quoteCurrencySymbol === this.config.mainMarket
       )
       .filter(({ status }) => status === 'ONLINE');
-    progressBar.increment(1);
+    progressBar?.increment(1);
 
     if (this.config.ignoreTokenizedStocks) {
       filtered = filtered.filter(
         ({ tags }) => !tags.includes('TOKENIZED_SECURITY')
       );
     }
-    progressBar.increment(1);
+    progressBar?.increment(1);
 
     if (this.config.stableCoins.ignore) {
       filtered = filtered.filter(
@@ -92,7 +92,7 @@ export default class Bot {
           !this.config.stableCoins.coins.includes(baseCurrencySymbol)
       );
     }
-    progressBar.increment(1);
+    progressBar?.increment(1);
 
     return filtered;
   };
@@ -106,7 +106,7 @@ export default class Bot {
 
     const filtered: MarketSummary[] = [];
     markets.forEach((market) => {
-      progressBar.increment(1, { name: market.symbol });
+      progressBar?.increment(1, { name: market.symbol });
       const matchedSummary = marketSummaries.find(
         ({ symbol }) => market.symbol === symbol
       );
@@ -140,7 +140,7 @@ export default class Bot {
       process: 'Collecting revenue'
     });
     for (const balance of balances) {
-      progressBar.increment(1, { name: balance.currencySymbol });
+      progressBar?.increment(1, { name: balance.currencySymbol });
 
       const ticker: MarketTicker = await this.api.getMarketTicker(
         `${balance.currencySymbol}-${this.config.mainMarket}`
@@ -183,7 +183,7 @@ export default class Bot {
     });
 
     for (const marketSymbol of marketSymbols) {
-      progressBar.increment(1, { name: marketSymbol });
+      progressBar?.increment(1, { name: marketSymbol });
 
       let decision: MarketDecision = 'NONE';
       const currencySymbol = marketSymbol.split('-')[0];
