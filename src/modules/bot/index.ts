@@ -5,7 +5,6 @@ import now from 'performance-now';
 import { BittrexApi } from '../api';
 import {
   Balance,
-  Candle,
   Market,
   MarketDecision,
   MarketSummary,
