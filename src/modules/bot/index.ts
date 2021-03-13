@@ -125,7 +125,7 @@ export default class Bot {
         ({ currencySymbol }) => !this.config.HODL.includes(currencySymbol)
       );
 
-    await sleep(10000);
+    await sleep(1500);
 
     for (const balance of balances) {
       const ticker: MarketTicker = await this.api.getMarketTicker(
