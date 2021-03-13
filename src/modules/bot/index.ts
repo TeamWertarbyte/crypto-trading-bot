@@ -41,6 +41,7 @@ export default class Bot {
     const marketSummaries: MarketSummary[] = await this.getMarketSummaries(
       markets
     );
+
     await this.evaluateMarkets(marketSummaries.map(({ symbol }) => symbol));
 
     if (this.config.enableReporting && !this.config.debug) {
@@ -55,22 +56,25 @@ export default class Bot {
 
     const markets: Market[] = await this.api.getMarkets();
 
-    const filtered: Market[] = markets
-      .filter(({ quoteCurrencySymbol }) =>
-        this.config.stableCoins.ignore
-          ? !this.config.stableCoins.coins.includes(quoteCurrencySymbol)
-          : true
-      )
-      .filter(({ tags }) =>
-        this.config.ignoreTokenizedStocks
-          ? !tags.includes('TOKENIZED_SECURITY')
-          : true
-      )
+    let filtered: Market[] = markets
       .filter(
         ({ quoteCurrencySymbol }) =>
           quoteCurrencySymbol === this.config.mainMarket
       )
       .filter(({ status }) => status === 'ONLINE');
+
+    if (this.config.ignoreTokenizedStocks) {
+      filtered = filtered.filter(
+        ({ tags }) => !tags.includes('TOKENIZED_SECURITY')
+      );
+    }
+
+    if (this.config.stableCoins.ignore) {
+      filtered = filtered.filter(
+        ({ baseCurrencySymbol }) =>
+          !this.config.stableCoins.coins.includes(baseCurrencySymbol)
+      );
+    }
 
     log.info(
       `Fetched ${markets.length} and filtered ${filtered.length} ${
