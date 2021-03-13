@@ -140,20 +140,19 @@ export default class Bot {
         );
         const quantity = revenue / ticker.bidRate;
 
-        if (!this.config.debug) {
-          if (quantity > market.minTradeSize) {
-            log.info(
-              `${balance.currencySymbol} placed REVENUE SELL order for ${revenue} ${this.config.mainMarket}`
-            );
-            const response = await this.api.sellLimit(
-              market.symbol,
-              quantity,
-              ticker.bidRate
-            );
-            log.info(response);
-          }
+        if (!this.config.debug && quantity > market.minTradeSize) {
+          log.info(
+            `${balance.currencySymbol} placed REVENUE SELL order ${quantity} for a total of ${revenue} ${this.config.mainMarket}`
+          );
+          const response = await this.api.sellLimit(
+            market.symbol,
+            quantity,
+            ticker.bidRate
+          );
+          log.info(response);
+          await sleep(1500);
         }
-        await sleep(2500);
+        await sleep(1500);
       }
       await sleep(1500);
     }
