@@ -1,6 +1,7 @@
 // @ts-ignore
 import log from 'fancy-log';
 import now from 'performance-now';
+import cliProgress from 'cli-progress';
 
 import { BittrexApi } from '../api';
 import {
@@ -14,6 +15,16 @@ import Configuration from '../configuration/Configuration';
 
 import { sleep } from '../utils';
 import { EMAEvaluation } from '../evaluation/EMAEvaluation';
+
+const multiProgressBar = new cliProgress.MultiBar(
+  {
+    clearOnComplete: false,
+    hideCursor: true,
+    format:
+      '[{bar}] {process} {percentage}% | {name} | ETA: {eta}s | {value}/{total}'
+  },
+  cliProgress.Presets.shades_grey
+);
 
 export default class Bot {
   api: BittrexApi;
@@ -48,12 +59,17 @@ export default class Bot {
     }
 
     log.info(`########## Finished ${(now() - start).toFixed(5)} ms ##########`);
+    multiProgressBar.stop();
   };
 
   getMarkets = async (): Promise<Market[]> => {
-    const start = now();
+    const progressBar = multiProgressBar.create(4, 0, {
+      process: 'Fetching markets',
+      name: ''
+    });
 
     const markets: Market[] = await this.api.getMarkets();
+    progressBar.increment(1);
 
     let filtered: Market[] = markets
       .filter(
@@ -61,12 +77,14 @@ export default class Bot {
           quoteCurrencySymbol === this.config.mainMarket
       )
       .filter(({ status }) => status === 'ONLINE');
+    progressBar.increment(1);
 
     if (this.config.ignoreTokenizedStocks) {
       filtered = filtered.filter(
         ({ tags }) => !tags.includes('TOKENIZED_SECURITY')
       );
     }
+    progressBar.increment(1);
 
     if (this.config.stableCoins.ignore) {
       filtered = filtered.filter(
@@ -74,22 +92,21 @@ export default class Bot {
           !this.config.stableCoins.coins.includes(baseCurrencySymbol)
       );
     }
+    progressBar.increment(1);
 
-    log.info(
-      `Fetched ${markets.length} and filtered ${filtered.length} ${
-        this.config.mainMarket
-      } markets ${(now() - start).toFixed(5)} ms`
-    );
     return filtered;
   };
 
   getMarketSummaries = async (markets: Market[]): Promise<MarketSummary[]> => {
-    const start = now();
+    const progressBar = multiProgressBar.create(markets.length, 0, {
+      process: 'Fetching market summaries'
+    });
 
     const marketSummaries: MarketSummary[] = await this.api.getMarketSummaries();
 
     const filtered: MarketSummary[] = [];
     markets.forEach((market) => {
+      progressBar.increment(1, { name: market.symbol });
       const matchedSummary = marketSummaries.find(
         ({ symbol }) => market.symbol === symbol
       );
@@ -98,11 +115,6 @@ export default class Bot {
       }
     });
 
-    log.info(
-      `Fetched ${marketSummaries.length} and filtered ${
-        filtered.length
-      } market summaries ${(now() - start).toFixed(5)} ms`
-    );
     return filtered;
   };
 
@@ -111,8 +123,6 @@ export default class Bot {
    * Ignore HODL coins
    */
   collectRevenue = async (): Promise<any> => {
-    const start = now();
-
     const balances: Balance[] = (await this.api.getBalances())
       .filter(({ available }) => available > 0)
       .filter(({ currencySymbol }) =>
@@ -126,7 +136,12 @@ export default class Bot {
 
     await sleep(1500);
 
+    const progressBar = multiProgressBar.create(balances.length, 0, {
+      process: 'Collecting revenue'
+    });
     for (const balance of balances) {
+      progressBar.increment(1, { name: balance.currencySymbol });
+
       const ticker: MarketTicker = await this.api.getMarketTicker(
         `${balance.currencySymbol}-${this.config.mainMarket}`
       );
@@ -155,18 +170,21 @@ export default class Bot {
       }
       await sleep(1500);
     }
-
-    log.info(`Collected revenue ${(now() - start).toFixed(5)} ms`);
   };
 
   evaluateMarkets = async (marketSymbols: string[]) => {
-    const start = now();
     const emaEvaluation = new EMAEvaluation(this.api, this.config);
 
     const balances: Balance[] = await this.api.getBalances();
     await sleep(1000);
 
+    const progressBar = multiProgressBar.create(marketSymbols.length, 0, {
+      process: 'Evaluating markets'
+    });
+
     for (const marketSymbol of marketSymbols) {
+      progressBar.increment(1, { name: marketSymbol });
+
       let decision: MarketDecision = 'NONE';
       const currencySymbol = marketSymbol.split('-')[0];
 
@@ -222,12 +240,6 @@ export default class Bot {
         }
       }
     }
-
-    log.info(
-      `Evaluated ${marketSymbols.length} markets in total ${(
-        now() - start
-      ).toFixed(5)} ms`
-    );
   };
 
   report = async () => {
